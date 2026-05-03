@@ -5,8 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <body>
-    
+    <!-- SideBar -->
+     <aside class="sidebar" id="sidebar">
+        <div class="logo" id="logo">
+            <div class="side-row">
+                <span class="nav-row-logo"><i class="fa-solid fa-circle-play"></i></span>
+                <span class="nav-row-text">MoviesNow</span>
+            </div>
+        </div>
+        <nav class="nav-section">
+            <p class="nav-section-label">Discover</p>
+            <button class="nav-row">
+                <span class="nav-row-logo"><i class="fas fa-house-chimney"></i></span>
+                <span class="nav-row-text">Home</span>
+            </button>
+            <button class="nav-row">
+                <span class="nav-row-logo"><i class="fas fa-clapperboard"></i></span>
+                <span class="nav-row-text">Films</span>
+            </button>
+            <button class="nav-row">
+                <span class="nav-row-logo"><i class="fas fa-tv"></i></span>
+                <span class="nav-row-text">Series</span>
+            </button>
+        </nav>
+        <nav class="nav-section">
+            <p class="nav-section-label">Library</p>
+            <button class="nav-row">
+                <span class="nav-row-icon"><i class="fas fa-bookmark"></i></span>
+                <span class="nav-row-text">Saved</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-foot">
+            <button class="nav-row" id="search-btn">
+                <span class="nav-row-logo"><i class="fas fa-magnifying-glass"></i></span>
+                <span class="nav-row-text">Search</span>
+            </button>
+            <button class="nav-row" id="profile-btn">
+                <span class="nav-row-logo"><i class="fas fa-circle-user"></i></span>
+                <span class="nav-row-text">Account</span>
+            </button>
+        </div>
+     </aside>
 </body>
 </html>
