@@ -107,12 +107,16 @@ button{
     padding-top: 16px;
 }
 
+/* Main Content */
+
 .main{
     margin-left: 180px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
+
+/* Mobile Topbars */
 
 .topbar{
     display: none;
@@ -149,4 +153,158 @@ button{
 .mob-top:hover{
     background: rgba(255, 255, 255, 0.12);
     color: #f5f5f5;
+}
+
+/* Hero Section */
+
+.hero{
+    position: relative;
+    height: 92vh;
+    min-height: 560px;
+    max-height: 860px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.hero-img{
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 20%;
+    transition: background-image 0.6s ease;
+}
+
+.hero-shade{
+    position: absolute;
+    inset: 0;
+    background:
+    linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.50) 55%, rgba(0, 0, 0, 0.10) 100%),
+    linear-gradient(to top, rgba(0, 0, 0, 1.00) 0%, rgba(0, 0, 0, 0.60) 35%, transparent 70%);
+}
+
+.hero-content{
+    position: relative;
+    z-index: 2;
+    padding: 0px 56px 72px;
+    max-width: 640px;
+}
+
+.hero-upper{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: rgba(245, 245, 245, 0.60);
+    margin-bottom: 16px;
+}
+
+.hero-title{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: clamp(3rem, 6.5vw, 6rem);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -1px;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.hero-tagline{
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(245, 245, 245, 0.60);
+    margin-bottom: 20px;
+    max-width: 460px;
+}
+
+.hero-lower{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.hero-lower-data{
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(245, 245, 245, 0.32);
+    padding: 3px 10px;
+    border-radius: 99px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(8px);
+}
+
+.hero-actions{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-info{
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 22px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #f5f5f5;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(16px);
+    transition: all 0.18s ease-out;
+}
+
+.btn-info:hover{
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+.btn-icon{
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(245, 245, 245, 0.60);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(16px);
+    transition: all 0.18s ease-out;
+}
+
+.btn-icon:hover{
+    background: rgba(255, 255, 255, 0.12);
+    color: #f5f5f5;
+    transform: translateY(-1px);
+}
+
+.btn-icon .fa-bookmark.fas {
+  color: #FFD60A;
+}
+
+.hero-score{
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    backdrop-filter: blur(20px);
+    font-size: 15px;
+    font-weight: 600;
 }
