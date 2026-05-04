@@ -106,3 +106,47 @@ button{
     border-top: 1px solid rgba(255, 255, 255, 0.08);;
     padding-top: 16px;
 }
+
+.main{
+    margin-left: 180px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar{
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 150;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px) saturate(1.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.topbar-right{
+    display: flex;
+    gap: 8px;
+}
+
+.mob-top{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(245, 245, 245, 0.60);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.mob-top:hover{
+    background: rgba(255, 255, 255, 0.12);
+    color: #f5f5f5;
+}
