@@ -78,8 +78,8 @@
                 <div class="hero-upper">
                     <span id="heroUpper">Trending Now</span>
                 </div>
-                <h1 class="hero-title" id="heroTitle">ABC</h1>
-                <p class="hero-tagline" id="hero-tagline">abcdefghijk</p>
+                <h1 class="hero-title" id="heroTitle"></h1>
+                <p class="hero-tagline" id="hero-tagline"></p>
                 <div class="hero-lower" id="heroLower"></div>
                 <div class="hero-actions">
                     <button class="btn-info" id="hero-info">
@@ -97,6 +97,56 @@
                 <span id="heroScoreVal"></span>
             </div>
         </section>
+        <div class="rows" id="rows">
+            <div class="row">
+                <div class="row-header">
+                    <h2>Name</h2>
+                    <span class="row-count">23</span>
+                </div>
+                <div class="row-grid">
+                    <article class="card">
+                        <div class="card-thumb">
+                            <img src="" alt="">
+                            <div class="card-overlay">
+                                <button class="card-action">
+                                    <i class="fas fa-circle-info"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-data">
+                            <div class="card-title">ABC</div>
+                            <div class="card-foot">
+                                <div class="card-attrs">
+                                    <span class="card-score">
+                                        <i class="fas fa-star"></i>
+                                        4.2
+                                    </span>
+                                    <span class="card-year">2026</span>
+                                </div>
+                                <button class="card-save">
+                                    <i class="far fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
      </main>
+     <main class="saved hidden" id="saved">
+        <div class="noresults" id="noresults">
+            <div class="saved-logo"><i class="fas fa-bookmark"></i></div>
+            <h3>Your list is empty</h3>
+            <p>Bookmark films and series to watch later.</p>
+        </div>
+     </main>
+     <!-- mobile -->
+      <nav class="bottom hidden" id="bottom" >
+        <button class="bottom-btn"><i class="fas fa-house-chimney"></i><span>Home</span></button>
+        <button class="bottom-btn"><i class="fas fa-clapperboard"></i><span>Films</span></button>
+        <button class="bottom-btn"><i class="fas fa-tv"></i><span>Series</span></button>
+        <button class="bottom-btn"><i class="fas fa-bookmark"></i><span>Saved</span></button>
+        <button class="bottom-btn" id="bottomSearch"><i class="fas fa-magnifying-glass"></i><span>Search</span></button>
+      </nav>
 </body>
 </html>
