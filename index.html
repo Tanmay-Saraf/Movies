@@ -52,7 +52,7 @@
         </div>
      </aside>
      <!-- Content -->
-     <main class="main" id="main">
+     <main class="main " id="main">
         <!-- Mobile -->
         <header class="topbar" id="topbar">
             <div class="logo" id="logo">
@@ -78,9 +78,9 @@
                 <div class="hero-upper">
                     <span id="heroUpper">Trending Now</span>
                 </div>
-                <h1 class="hero-title" id="heroTitle"></h1>
-                <p class="hero-tagline" id="hero-tagline"></p>
-                <div class="hero-lower" id="heroLower"></div>
+                <h1 class="hero-title" id="heroTitle">ABC</h1>
+                <p class="hero-tagline" id="hero-tagline">abcd</p>
+                <div class="hero-lower" id="heroLower">tghjk</div>
                 <div class="hero-actions">
                     <button class="btn-info" id="hero-info">
                         <i class="fas fa-circle-info"></i>
@@ -148,5 +148,82 @@
         <button class="bottom-btn"><i class="fas fa-bookmark"></i><span>Saved</span></button>
         <button class="bottom-btn" id="bottomSearch"><i class="fas fa-magnifying-glass"></i><span>Search</span></button>
       </nav>
+      <!-- Info Page -->
+       <div class="cover" id="infoPage">
+        <div class="details" id="details">
+            <button class="detailClose" id="detailClose">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div id="detailContent">
+                <img src="" alt="" class="detail-hero-img">
+                <div class="detail-hero-overlay"></div>
+                <div class="detail-body">
+                    <div class="detail-top">
+                        <div>
+                            <div class="detail-title">Name</div>
+                            <div class="detail-attrs">
+                                <span><i class="fas fa-calendar"></i> " 2026"</span>
+                                <span><i class="fas fa-clock"></i> " 120min"</span>
+                                <span><i class="fas fa-star" style="color:var(--gold)"></i> " 9.9"</span>
+                            </div>
+                        </div>
+                        <button class="detail-save" id="detailSaveBtn"><i class="far fa-bookmark"></i></button>
+                    </div>
+                    <div class="detail-genres">
+                        <span class="genre-pill">Action</span>
+                        <span class="genre-pill">Fantasy</span>
+                    </div>
+                    <p class="detail-overview">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error, ducimus possimus. Dignissimos doloremque quaerat dolor omnis voluptatem alias assumenda molestiae distinctio deleniti suscipit veniam autem culpa ipsum nobis porro eveniet placeat sunt hic, repudiandae modi et est, consectetur inventore iste.</p>
+                    <div class="detail-stats">
+                        <div class="detail-stat">
+                            <div class="detail-stat-key">Rating</div>
+                            <div class="detail-stat-val">9.9</div>
+                        </div>
+                        <div class="detail-stat">
+                            <div class="detail-stat-key">Votes</div>
+                            <div class="detail-stat-val">100</div>
+                        </div>
+                        <div class="detail-stat">
+                            <div class="detail-stat-key">Popularity</div>
+                            <div class="detail-stat-val">90</div>
+                        </div>
+                        <div class="detail-stat">
+                            <div class="detail-stat-key">Budget</div>
+                            <div class="detail-stat-val">$100M</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       </div>
+
+       <!-- profile-page -->
+        <div class="cover" id="profilePage">
+            <div class="details details-profile" id="profiledetail">
+                <button class="detailClose" id="profileClose">
+                    <i class="fas fa-xmark"></i>
+                </button>
+                <div class="account">
+                    <div class="account-logo"><i class="fas fa-user"></i></div>
+                    <h2 class="account-name">User</h2>
+                    <p class="account-info">Personal Collecion</p>
+                    <div class="account-stats">
+                        <div class="account-stat">
+                            <b id="statFavorites">0</b>
+                            <span>Saved</span>
+                        </div>
+                        <ul class="account-list">
+                            <li>
+                                <button class="list-clear danger" id="clearListBtn">
+                                    <span class="clear-icon"><i class="fas fa-trash-can"></i></span>
+                                    <span class="clear-label">Clear Saved List</span>
+                                    <i class="fas fa-chevron-right alr-chevron"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>
 </html>
