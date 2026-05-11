@@ -691,7 +691,7 @@ button{
     padding: 0px 28px 32px;
 }
 
-.deatil-top{
+.detail-top{
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -1059,7 +1059,7 @@ button{
   margin-top: 2px;
 }
 
-.searxh-result-actions {
+.search-result-actions {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
