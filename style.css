@@ -135,6 +135,13 @@ button{
     color: #f5f5f5;
 }
 
+.nav-row.active{
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateX(2px);
+    color: #f5f5f5;
+}
+
 .nav-row-logo{
     width: 28px;
     height: 28px;
@@ -635,8 +642,17 @@ button{
     margin-left: 72px;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+}
+
+.saved.noresults{
+    display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.saved .row-title{
+    font-size: 50px;
 }
 
 .noresults{

@@ -304,16 +304,59 @@ const movies = [
 ];
 
 
+let savedMovies = [{
+        id: 18,
+        title: "Succession",
+        type: "series",
+        poster: "https://image.tmdb.org/t/p/w500/7HW47XbkNQ5fiwQFYGWdw9gs144.jpg",
+        backdrop: "https://image.tmdb.org/t/p/original/cD5YH6JkaZJRS9Me0fTswYPgRUc.jpg",
+        rating: 8.3,
+        year: 2018,
+        runtime: 60,
+        overview: "The Roy family controls one of the biggest media and entertainment conglomerates in the world as they contemplate what the future will hold once their aging father begins to step back.",
+        genres: ["Drama"],
+        votes: 1987,
+        popularity: 267.4,
+        budget: null
+    },
+    {
+        id: 19,
+        title: "Spider-Man: Across the Spider-Verse",
+        type: "movie",
+        poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+        backdrop: "https://image.tmdb.org/t/p/original/nGxUxi3PfXDRm7Vg95VBNgNM8yc.jpg",
+        rating: 8.6,
+        year: 2023,
+        runtime: 140,
+        overview: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
+        genres: ["Animation", "Action", "Adventure"],
+        votes: 6234,
+        popularity: 512.9,
+        budget: 100000000
+    },
+    {
+        id: 20,
+        title: "Arcane",
+        type: "series",
+        poster: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg",
+        backdrop: "https://image.tmdb.org/t/p/original/rkB4LyZHo1NHXFEDHl9vSD9r1lI.jpg",
+        rating: 8.9,
+        year: 2021,
+        runtime: 41,
+        overview: "Amid the stark discord of twin cities Piltover and Zaun, two sisters fight on rival sides of a war between magic technologies and clashing convictions.",
+        genres: ["Animation", "Sci-Fi & Fantasy", "Action & Adventure"],
+        votes: 3892,
+        popularity: 423.8,
+        budget: null
+    }];
+
 // filtering functions 
 
 function getTrending(){
     return movies.slice(0,7);
 }
-function getMovies(){
-    return movies.filter((content)=> content.type === "movie");
-}
-function getSeries(){
-    return movies.filter((content)=> content.type === "series");
+function getByType(type){
+    return movies.filter((content)=> content.type.toLowerCase() === type.toLowerCase());
 }
 function getTopRated(){
     return [...movies].sort((a,b)=>b.rating-a.rating).slice(0,10);
@@ -323,6 +366,15 @@ function searchByTitle(query){
 }
 function getByGenre(query){
     return movies.filter((content)=>content.genres.some((genre) => genre.toLowerCase() === query.toLowerCase())).slice(0,8);
+}
+function getByGenreType(query,type){
+    return movies.filter((content)=>{
+        return (
+            content.type.toLowerCase() === type.toLowerCase() && content.genres.some((genre)=>{
+                return genre.toLowerCase() === query.toLowerCase();
+            })
+        );
+    }).slice(0,8);
 }
 
 // rows - rendering 
@@ -364,26 +416,43 @@ function createRow(query,data){
             </div>`
 }
 
-function renderRows(){
+function renderRows(label){
     const rowsContainer = document.getElementById("rows");
-    rowsContainer.innerHTML = `
+    if(label==="Home"){
+        rowsContainer.innerHTML = `
                                 ${createRow('Trending Now',getTrending())}
                                 ${createRow('Top Rated',getTopRated())}
-                                ${createRow('Popular Movies',getMovies())}
-                                ${createRow('Must Watch Series',getSeries())}
+                                ${createRow('Popular Movies',getByType("movie"))}
+                                ${createRow('Must Watch Series',getByType("series"))}
                                 ${createRow('Action',getByGenre('Action'))}
                                 ${createRow('Comedy',getByGenre('Comedy'))}
                                 ${createRow('Thriller',getByGenre('Thriller'))}
                                 ${createRow('Drama',getByGenre('Drama'))}
                                 `
+    }else if(label==="movie"||label === "series"){
+        let capitalised = label.charAt(0).toUpperCase() + label.slice(1);
+        if(label==="movie")capitalised+="s";
+        rowsContainer.innerHTML = `
+                                ${createRow('Popular '+capitalised,getByType(label))}
+                                ${createRow('Action',getByGenreType('Action',label))}
+                                ${createRow('Comedy',getByGenreType('Comedy',label))}
+                                ${createRow('Thriller',getByGenreType('Thriller',label))}
+                                ${createRow('Drama',getByGenreType('Drama',label))}
+                                `
+    }
 }
 
 // render hero
 
-function renderHero(){
+function renderHero(label){
     let hero = document.querySelector(".hero");
-    let heroItem = getTrending()[0];
-    hero.innerHTML = `<div class="hero-img" id="hero-img" style="background-image:url('${heroItem.backdrop}')">></div>
+    let heroItem;
+    if(label==="Home"){
+        heroItem = getTrending()[0];
+    }else{
+        heroItem = getByType(label)[0];
+    }
+    hero.innerHTML = `<div class="hero-img" id="hero-img" style="background-image:url('${heroItem.backdrop}')"></div>
             <div class="hero-shade"></div>
             <div class="hero-content">
                 <div class="hero-upper">
@@ -412,5 +481,138 @@ function renderHero(){
             </div>`
 }
 
-renderHero();
-renderRows();
+// render saved 
+
+function renderSaved(){
+    let saved = document.querySelector(".saved");
+    if(savedMovies.length===0){
+        saved.classList.add("noresults");
+        saved.innerHTML = `<div class="noresults" id="noresults">
+                                <div class="saved-logo"><i class="fas fa-bookmark"></i></div>
+                                <h3>Your list is empty</h3>
+                                <p>Bookmark films and series to watch later.</p>
+                            </div>`
+    }else{
+        saved.classList.remove("noresults");
+        saved.innerHTML = "";
+        let savedContainer = document.createElement("div");
+        savedContainer.classList.add("rows")
+        savedContainer.innerHTML += `${createRow('Saved',savedMovies)}`
+        saved.append(savedContainer)
+    }
+}
+
+// linking home and other navigation 
+let selected = document.querySelector(".nav-row");
+
+document.querySelectorAll(".nav-row").forEach(element => {
+    element.addEventListener("click",()=>{
+    if(selected!==element){
+        if(selected.querySelector(".nav-row-text").textContent==="Saved"){
+            document.querySelector(".main").classList.remove("hidden");
+            document.querySelector(".saved").classList.add("hidden");
+        }
+        selected.classList.remove("active");
+        selected = element;
+    }
+    selected.classList.add("active");
+    let text = selected.querySelector(".nav-row-text").textContent;
+    if(text==="Home"){
+        renderHero(text);
+        renderRows(text);
+    }else if(text==="Films"||text==="Series"){
+        if(text==="Films")text = "movie";
+        else text = "series"
+        renderRows(text);
+        renderHero(text);
+    }else if(text==="Saved"){
+        document.querySelector(".main").classList.add("hidden");
+        document.querySelector(".saved").classList.remove("hidden");
+        renderSaved();
+    }else if(text==="Search"){
+        document.querySelector("#searchPage").classList.add("open");
+        
+    }else if(text==="Account"){
+        document.querySelector("#profilePage").classList.add("open");
+        document.querySelector("#statFavorites").textContent = savedMovies.length;
+    }
+})
+});
+
+// search result 
+
+document.querySelector("#searchInput").addEventListener("input",()=>{
+    let input = document.querySelector("#searchInput").value;
+    if(input===""){
+        document.querySelector("#searchResults").innerHTML = `<p class="search-section-label">0 results</p>`
+    }else{
+        let result = searchByTitle(input);
+        let html = result.map((element)=>`<div class="search-result">
+                            <img src="${element.poster}" alt="Poster" class="search-result-thumb">
+                            <div class="search-result-info">
+                                <div class="search-result-title">${element.title}</div>
+                                <div class="search-result-sub">${element.year} . ★ ${element.rating}</div>
+                            </div>
+                            <div class="search-result-actions">
+                                <button class="search-action">
+                                    <i class="fas fa-circle-info"></i>
+                                </button>
+                                <button class="search-action save-btn">
+                                    <i class="far fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>`).join('');
+
+        
+        document.querySelector("#searchResults").innerHTML = `<p class="search-section-label">${result.length} results</p>`
+        document.querySelector("#searchResults").innerHTML+=html;
+    }}
+)
+// search and profile closer 
+
+document.querySelector("#profilePage #profileClose").addEventListener("click",()=>{
+    document.querySelector("#profilePage").classList.remove("open");
+    selected.classList.remove("active");
+    selected = document.querySelector(".nav-row");
+    selected.classList.add("active");
+    let text = selected.querySelector(".nav-row-text").textContent;
+    renderHero(text);
+    renderRows(text);
+})
+
+document.querySelector("#searchPage #searchClear").addEventListener("click",()=>{
+    document.querySelector("#searchPage").classList.remove("open");
+    selected.classList.remove("active");
+    selected = document.querySelector(".nav-row");
+    selected.classList.add("active");
+    let text = selected.querySelector(".nav-row-text").textContent;
+    renderHero(text);
+    renderRows(text);
+})
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        if(document.querySelector("#profilePage").classList.contains("open")){
+            document.querySelector("#profilePage").classList.remove("open");
+        }else if(document.querySelector("#searchPage").classList.contains("open")){
+            document.querySelector("#searchPage").classList.remove("open");
+        }
+        selected.classList.remove("active");
+        selected = document.querySelector(".nav-row");
+        selected.classList.add("active");
+        let text = selected.querySelector(".nav-row-text").textContent;
+        renderHero(text);
+        renderRows(text);
+    }
+});
+
+// clear saved list 
+
+document.querySelector("#clearListBtn").addEventListener("click",()=>{
+    savedMovies = [];
+    document.querySelector("#statFavorites").textContent = savedMovies.length;
+    document.querySelector(".saved").classList.add("noresults");
+})
+
+renderHero("Home");
+renderRows("Home");
