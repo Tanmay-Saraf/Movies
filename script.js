@@ -304,51 +304,7 @@ const movies = [
 ];
 
 
-let savedMovies = [{
-        id: 18,
-        title: "Succession",
-        type: "series",
-        poster: "https://image.tmdb.org/t/p/w500/7HW47XbkNQ5fiwQFYGWdw9gs144.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/cD5YH6JkaZJRS9Me0fTswYPgRUc.jpg",
-        rating: 8.3,
-        year: 2018,
-        runtime: 60,
-        overview: "The Roy family controls one of the biggest media and entertainment conglomerates in the world as they contemplate what the future will hold once their aging father begins to step back.",
-        genres: ["Drama"],
-        votes: 1987,
-        popularity: 267.4,
-        budget: null
-    },
-    {
-        id: 19,
-        title: "Spider-Man: Across the Spider-Verse",
-        type: "movie",
-        poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/nGxUxi3PfXDRm7Vg95VBNgNM8yc.jpg",
-        rating: 8.6,
-        year: 2023,
-        runtime: 140,
-        overview: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
-        genres: ["Animation", "Action", "Adventure"],
-        votes: 6234,
-        popularity: 512.9,
-        budget: 100000000
-    },
-    {
-        id: 20,
-        title: "Arcane",
-        type: "series",
-        poster: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/rkB4LyZHo1NHXFEDHl9vSD9r1lI.jpg",
-        rating: 8.9,
-        year: 2021,
-        runtime: 41,
-        overview: "Amid the stark discord of twin cities Piltover and Zaun, two sisters fight on rival sides of a war between magic technologies and clashing convictions.",
-        genres: ["Animation", "Sci-Fi & Fantasy", "Action & Adventure"],
-        votes: 3892,
-        popularity: 423.8,
-        budget: null
-    }];
+let savedMovies = JSON.parse(localStorage.getItem("savedMovies")) || []
 
 // filtering functions 
 
@@ -381,7 +337,7 @@ function getByGenreType(query,type){
 
 function createRow(query,data){
     let html = data.map(element => 
-        `<article class="card">
+        `<article class="card" data-id="${element.id}">
                         <div class="card-thumb">
                             <img src="${element.poster}"  alt="poster" class="card-img">
                             <div class="card-overlay">
@@ -407,13 +363,50 @@ function createRow(query,data){
                         </div>
                     </article>`
     ).join('');
-    return `<div class="row-header">
+    
+    return `<div class="row"><div class="row-header">
                 <h2 class="row-title">${query}</h2>
                 <span class="row-count">${data.length}</span>
             </div>
             <div class="row-grid">
                 ${html}
-            </div>`
+            </div></div>`
+}
+
+function syncSave(){
+    document.querySelectorAll(".card").forEach(card=>{
+        const movieId = parseInt(card.dataset.id);
+        const icon = card.querySelector(".fa-bookmark");
+        let isSaved = savedMovies.some(m => m.id === movieId);
+        icon.classList.toggle("far",!isSaved);
+        icon.classList.toggle("fas",isSaved);
+    })
+
+    let heroFav = document.getElementById("heroFav");
+    const heroId = parseInt(document.querySelector(".hero").dataset.id);
+    const icon = heroFav.querySelector(".fa-bookmark");
+    let isSaved = savedMovies.some(m=>m.id===heroId);
+    icon.classList.toggle("far",!isSaved);
+    icon.classList.toggle("fas",isSaved);
+}
+
+function attachSave(){
+    document.querySelectorAll(".card-save").forEach(button => {
+        let card = button.closest(".card");
+        const movieId = parseInt(card.dataset.id);
+        let movie = movies.find(item => item.id === movieId);
+        button.addEventListener("click",()=>{
+            let is_saved = savedMovies.some(movie=>movie.id===movieId);
+            if(is_saved){
+                savedMovies = savedMovies.filter(movie => movie.id !== movieId);
+            }else{
+                savedMovies.push(movie);
+            }
+            saveToLocalStorage();
+            syncSave();
+        });
+    });
+    syncSave();
 }
 
 function renderRows(label){
@@ -440,6 +433,8 @@ function renderRows(label){
                                 ${createRow('Drama',getByGenreType('Drama',label))}
                                 `
     }
+
+    attachSave();
 }
 
 // render hero
@@ -479,6 +474,21 @@ function renderHero(label){
                 <i class="fas fa-star"></i>
                 <span id="heroScoreVal">${heroItem.rating}</span>
             </div>`
+    hero.dataset.id = heroItem.id;
+    document.getElementById("heroFav").addEventListener("click",()=>{
+    let is_saved = savedMovies.some(movie => movie.id === heroItem.id);
+    if(is_saved){
+        is_saved = false;
+        savedMovies = savedMovies.filter((element)=>element.id!=heroItem.id)
+    }else{
+        is_saved = true;
+        savedMovies.push(heroItem);
+    }
+
+    saveToLocalStorage();
+    syncSave();
+})
+syncSave();
 }
 
 // render saved 
@@ -507,6 +517,15 @@ let selected = document.querySelector(".nav-row");
 
 document.querySelectorAll(".nav-row").forEach(element => {
     element.addEventListener("click",()=>{
+    let text = element.querySelector(".nav-row-text").textContent;
+    if(text==="Search"){
+        document.querySelector("#searchPage").classList.add("open");
+        return;
+    }else if(text==="Account"){
+        document.querySelector("#profilePage").classList.add("open");
+        document.querySelector("#statFavorites").textContent = savedMovies.length;
+        return;
+    }
     if(selected!==element){
         if(selected.querySelector(".nav-row-text").textContent==="Saved"){
             document.querySelector(".main").classList.remove("hidden");
@@ -514,30 +533,33 @@ document.querySelectorAll(".nav-row").forEach(element => {
         }
         selected.classList.remove("active");
         selected = element;
+        selected.classList.add("active");
     }
-    selected.classList.add("active");
-    let text = selected.querySelector(".nav-row-text").textContent;
     if(text==="Home"){
         renderHero(text);
         renderRows(text);
     }else if(text==="Films"||text==="Series"){
-        if(text==="Films")text = "movie";
-        else text = "series"
-        renderRows(text);
-        renderHero(text);
+        let type;
+        if(text==="Films")type = "movie";
+        else type = "series"
+        renderRows(type);
+        renderHero(type);
     }else if(text==="Saved"){
         document.querySelector(".main").classList.add("hidden");
         document.querySelector(".saved").classList.remove("hidden");
         renderSaved();
-    }else if(text==="Search"){
-        document.querySelector("#searchPage").classList.add("open");
-        
-    }else if(text==="Account"){
-        document.querySelector("#profilePage").classList.add("open");
-        document.querySelector("#statFavorites").textContent = savedMovies.length;
     }
 })
 });
+
+document.getElementById("searchbtnMob").addEventListener("click",()=>{
+    document.querySelector("#searchPage").classList.add("open");
+})
+
+document.getElementById("profilebtnMob").addEventListener("click",()=>{
+    document.querySelector("#profilePage").classList.add("open");
+    document.querySelector("#statFavorites").textContent = savedMovies.length;
+})
 
 // search result 
 
@@ -597,6 +619,8 @@ document.addEventListener('keydown', function(event) {
         }else if(document.querySelector("#searchPage").classList.contains("open")){
             document.querySelector("#searchPage").classList.remove("open");
         }
+        document.querySelector(".main").classList.remove("hidden");
+        document.querySelector(".saved").classList.add("hidden");
         selected.classList.remove("active");
         selected = document.querySelector(".nav-row");
         selected.classList.add("active");
@@ -610,9 +634,16 @@ document.addEventListener('keydown', function(event) {
 
 document.querySelector("#clearListBtn").addEventListener("click",()=>{
     savedMovies = [];
+    saveToLocalStorage();
     document.querySelector("#statFavorites").textContent = savedMovies.length;
     document.querySelector(".saved").classList.add("noresults");
 })
 
+
+// saving a movie
+
+function saveToLocalStorage(){
+    localStorage.setItem("savedMovies",JSON.stringify(savedMovies))
+}
 renderHero("Home");
 renderRows("Home");

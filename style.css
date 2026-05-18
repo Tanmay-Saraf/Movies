@@ -726,6 +726,23 @@ button{
     margin-bottom: 1px;
 }
 
+.bottom-btn .nav-row-text{
+    opacity: 1;
+}
+
+.bottom-btn.active{
+    transform: none;
+    background-color: transparent;
+    box-shadow: none;
+    color: #f5f5f5;
+}
+
+.bottom-btn.active i{
+    color: #8b5cf6;
+    transform: scale(1.15);
+    transition: 0.2s ease;
+}
+
 /* other pages  */
 
 .cover{
