@@ -508,7 +508,18 @@ function renderSaved(){
         let savedContainer = document.createElement("div");
         savedContainer.classList.add("rows")
         savedContainer.innerHTML += `${createRow('Saved',savedMovies)}`
-        saved.append(savedContainer)
+        saved.append(savedContainer);
+        // attachSave();
+        saved.querySelectorAll(".card-save").forEach(button => {
+            let card = button.closest(".card");
+            button.querySelector(".fa-bookmark").classList.replace("far","fas");
+            const movieId = parseInt(card.dataset.id);
+            button.addEventListener("click",()=>{
+                savedMovies = savedMovies.filter(m => m.id!==movieId);
+                saveToLocalStorage();
+                renderSaved();
+            })
+        });
     }
 }
 
@@ -569,7 +580,7 @@ document.querySelector("#searchInput").addEventListener("input",()=>{
         document.querySelector("#searchResults").innerHTML = `<p class="search-section-label">0 results</p>`
     }else{
         let result = searchByTitle(input);
-        let html = result.map((element)=>`<div class="search-result">
+        let html = result.map((element)=>`<div class="search-result" data-id="${element.id}">
                             <img src="${element.poster}" alt="Poster" class="search-result-thumb">
                             <div class="search-result-info">
                                 <div class="search-result-title">${element.title}</div>
@@ -588,28 +599,46 @@ document.querySelector("#searchInput").addEventListener("input",()=>{
         
         document.querySelector("#searchResults").innerHTML = `<p class="search-section-label">${result.length} results</p>`
         document.querySelector("#searchResults").innerHTML+=html;
+        console.log(document.querySelectorAll(".search-result"));
+        document.querySelectorAll(".search-result").forEach((res)=>{
+            let movieId = parseInt(res.dataset.id);
+            let movie = movies.find(item => item.id === movieId);
+            let icon = res.querySelector(".fa-bookmark")
+            let isSaved = savedMovies.some(m=>m.id===movieId)
+            if(isSaved){
+                icon.classList.add("fas");
+                icon.classList.remove("far");
+            }
+            let button = res.querySelector(".save-btn");
+            button.addEventListener("click",()=>{
+                if(isSaved){
+                    isSaved = false;
+                    icon.classList.add("far");
+                    icon.classList.remove("fas");
+                    savedMovies = savedMovies.filter(m => m.id!==movieId);
+                }else{
+                    isSaved = true;
+                    icon.classList.add("fas");
+                    icon.classList.remove("far");
+                    savedMovies.push(movie);
+                }
+                saveToLocalStorage();
+                syncSave();
+            })
+        })
     }}
 )
 // search and profile closer 
 
 document.querySelector("#profilePage #profileClose").addEventListener("click",()=>{
     document.querySelector("#profilePage").classList.remove("open");
-    selected.classList.remove("active");
-    selected = document.querySelector(".nav-row");
-    selected.classList.add("active");
-    let text = selected.querySelector(".nav-row-text").textContent;
-    renderHero(text);
-    renderRows(text);
+    syncSave();
 })
 
 document.querySelector("#searchPage #searchClear").addEventListener("click",()=>{
     document.querySelector("#searchPage").classList.remove("open");
-    selected.classList.remove("active");
-    selected = document.querySelector(".nav-row");
-    selected.classList.add("active");
-    let text = selected.querySelector(".nav-row-text").textContent;
-    renderHero(text);
-    renderRows(text);
+    document.querySelector("#searchInput").value = "";
+    syncSave();
 })
 
 document.addEventListener('keydown', function(event) {
@@ -618,15 +647,11 @@ document.addEventListener('keydown', function(event) {
             document.querySelector("#profilePage").classList.remove("open");
         }else if(document.querySelector("#searchPage").classList.contains("open")){
             document.querySelector("#searchPage").classList.remove("open");
+            document.querySelector("#searchInput").value = "";
         }
         document.querySelector(".main").classList.remove("hidden");
         document.querySelector(".saved").classList.add("hidden");
-        selected.classList.remove("active");
-        selected = document.querySelector(".nav-row");
-        selected.classList.add("active");
-        let text = selected.querySelector(".nav-row-text").textContent;
-        renderHero(text);
-        renderRows(text);
+        syncSave();
     }
 });
 
