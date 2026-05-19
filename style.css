@@ -873,6 +873,10 @@ button{
     color: rgba(245, 245, 245, 0.32);
 }
 
+.detail-attrs .fa-star{
+    color: #FFD60A;
+}
+
 .detail-save{
     width: 40px;
     height: 40px;
@@ -893,7 +897,9 @@ button{
     color: #f5f5f5;
 }
 
-.detail-save.saved{
+.detail-save.bookmarked{
+    width: 40px;
+    height: 40px;
     border-color: rgba(255, 214, 10, 0.4);
     color: #FFD60A;
     background: rgba(255, 214, 10, 0.08);
@@ -1235,7 +1241,7 @@ button{
   color: #000000;
 }
 
-.search-action.save-btn.saved{
+.search-action.save-btn.bookmarked{
     color: #FFD60A;
     border-color: rgba(255,214,10,0.3);
     background: rgba(255,214,10,0.06);
@@ -1255,6 +1261,10 @@ button{
   letter-spacing: 1.2px;
   color: rgba(245, 245, 245, 0.4);
   padding: 8px 10px 4px;
+}
+
+#infoPage{
+    z-index: 1000;
 }
 
 /* media-queries  */

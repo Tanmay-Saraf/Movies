@@ -333,6 +333,52 @@ function getByGenreType(query,type){
     }).slice(0,8);
 }
 
+// render info page
+function info(movie){
+    document.querySelector(".detail-hero-img").src = movie.backdrop;
+    document.querySelector(".detail-title").textContent = movie.title;
+    document.querySelectorAll("#infoPage .detail-attrs span")[0].innerHTML = `<i class="fas fa-calendar"></i>${movie.year}`
+    document.querySelectorAll("#infoPage .detail-attrs span")[1].innerHTML = `<i class="fas fa-clock"></i>${movie.runtime}`
+    document.querySelectorAll("#infoPage .detail-attrs span")[2].innerHTML = `<i class="fas fa-star"></i>${movie.rating}`
+    let genreHtml = movie.genres.map((genre)=>`<span class="genre-pill">${genre}</span>`).join('');
+    document.querySelector('.detail-genres').innerHTML = genreHtml;
+    document.querySelector('.detail-overview').textContent = movie.overview;
+    document.querySelectorAll('.detail-stat-val')[0].textContent = movie.rating;
+    document.querySelectorAll('.detail-stat-val')[1].textContent = movie.votes.toLocaleString();
+    document.querySelectorAll('.detail-stat-val')[2].textContent = movie.popularity;
+    let budget
+    if(movie.budget){
+        budget = "$"+(movie.budget/1000000).toFixed(0)+"M";
+    }else budget = "N/A";
+    document.querySelectorAll('.detail-stat-val')[3].textContent = budget;
+    let saveBtn = document.querySelector('.detail-save');
+    let isSaved = savedMovies.some(m=>m.id===movie.id);
+    const icon = saveBtn.querySelector('.fa-bookmark');
+    if(isSaved){
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        saveBtn.classList.add("bookmarked");
+    }
+    saveBtn.onclick = ()=>{
+        let isSaved = savedMovies.some(m=>m.id===movie.id);
+        if(isSaved){
+            savedMovies = savedMovies.filter(m=>m.id!==movie.id);
+            icon.classList.replace('fas','far');
+        }
+        else {
+            savedMovies.push(movie);
+            icon.classList.replace('far','fas');
+        }
+        saveToLocalStorage();
+        syncSave();
+        isSaved = savedMovies.some(m=>m.id===movie.id);
+        saveBtn.classList.toggle("bookmarked",isSaved);
+    };
+
+    document.getElementById("infoPage").classList.add("open");
+}
+
+
 // rows - rendering 
 
 function createRow(query,data){
@@ -390,7 +436,13 @@ function syncSave(){
     icon.classList.toggle("fas",isSaved);
 }
 
-function attachSave(){
+function attachSaveInfo(){
+    document.querySelectorAll(".card-action").forEach(button=>{
+        let card = button.closest(".card");
+        const movieId = parseInt(card.dataset.id);
+        let movie = movies.find(m=>m.id===movieId);
+        button.addEventListener("click",()=>info(movie));
+    })
     document.querySelectorAll(".card-save").forEach(button => {
         let card = button.closest(".card");
         const movieId = parseInt(card.dataset.id);
@@ -434,9 +486,8 @@ function renderRows(label){
                                 `
     }
 
-    attachSave();
+    attachSaveInfo();
 }
-
 // render hero
 
 function renderHero(label){
@@ -484,10 +535,10 @@ function renderHero(label){
         is_saved = true;
         savedMovies.push(heroItem);
     }
-
     saveToLocalStorage();
     syncSave();
 })
+document.getElementById("hero-info").addEventListener("click",()=>info(heroItem));
 syncSave();
 }
 
@@ -509,7 +560,6 @@ function renderSaved(){
         savedContainer.classList.add("rows")
         savedContainer.innerHTML += `${createRow('Saved',savedMovies)}`
         saved.append(savedContainer);
-        // attachSave();
         saved.querySelectorAll(".card-save").forEach(button => {
             let card = button.closest(".card");
             button.querySelector(".fa-bookmark").classList.replace("far","fas");
@@ -520,6 +570,12 @@ function renderSaved(){
                 renderSaved();
             })
         });
+        saved.querySelectorAll(".card-action").forEach(button=>{
+            let card = button.closest(".card");
+            const movieId = parseInt(card.dataset.id);
+            let movie = movies.find(m=>m.id===movieId);
+            button.addEventListener("click",()=>info(movie));
+        })
     }
 }
 
@@ -605,22 +661,27 @@ document.querySelector("#searchInput").addEventListener("input",()=>{
             let movie = movies.find(item => item.id === movieId);
             let icon = res.querySelector(".fa-bookmark")
             let isSaved = savedMovies.some(m=>m.id===movieId)
+            let button = res.querySelector(".save-btn");
             if(isSaved){
                 icon.classList.add("fas");
                 icon.classList.remove("far");
+                button.classList.add("bookmarked");
             }
-            let button = res.querySelector(".save-btn");
+            let infoBtn = res.querySelectorAll(".search-action")[0];
+            infoBtn.addEventListener("click",()=>info(movie));
             button.addEventListener("click",()=>{
                 if(isSaved){
                     isSaved = false;
                     icon.classList.add("far");
                     icon.classList.remove("fas");
                     savedMovies = savedMovies.filter(m => m.id!==movieId);
+                    button.classList.remove("bookmarked")
                 }else{
                     isSaved = true;
                     icon.classList.add("fas");
                     icon.classList.remove("far");
                     savedMovies.push(movie);
+                    button.classList.add("bookmarked");
                 }
                 saveToLocalStorage();
                 syncSave();
@@ -628,30 +689,48 @@ document.querySelector("#searchInput").addEventListener("input",()=>{
         })
     }}
 )
-// search and profile closer 
+// search and profile and info closer 
 
 document.querySelector("#profilePage #profileClose").addEventListener("click",()=>{
     document.querySelector("#profilePage").classList.remove("open");
     syncSave();
+    
 })
 
 document.querySelector("#searchPage #searchClear").addEventListener("click",()=>{
     document.querySelector("#searchPage").classList.remove("open");
     document.querySelector("#searchInput").value = "";
     syncSave();
+    if(!document.querySelector(".saved").classList.contains("hidden")){
+        renderSaved();
+    }
+})
+
+document.querySelector("#infoPage #detailClose").addEventListener("click",()=>{
+    document.querySelector("#infoPage").classList.remove("open");
+    syncSave();
 })
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
-        if(document.querySelector("#profilePage").classList.contains("open")){
-            document.querySelector("#profilePage").classList.remove("open");
+        syncSave();
+        if(!document.querySelector(".saved").classList.contains("hidden")){
+            renderSaved();
+        }
+        if(document.querySelector("#infoPage").classList.contains("open")){
+            document.querySelector("#infoPage").classList.remove("open");
+            return;
         }else if(document.querySelector("#searchPage").classList.contains("open")){
             document.querySelector("#searchPage").classList.remove("open");
             document.querySelector("#searchInput").value = "";
+            return;
+        }else if(document.querySelector("#profilePage").classList.contains("open")){
+            document.querySelector("#profilePage").classList.remove("open");
+            return;
         }
         document.querySelector(".main").classList.remove("hidden");
         document.querySelector(".saved").classList.add("hidden");
-        syncSave();
+        
     }
 });
 
@@ -662,6 +741,9 @@ document.querySelector("#clearListBtn").addEventListener("click",()=>{
     saveToLocalStorage();
     document.querySelector("#statFavorites").textContent = savedMovies.length;
     document.querySelector(".saved").classList.add("noresults");
+    if(!document.querySelector(".saved").classList.contains("hidden")){
+        renderSaved();
+    }
 })
 
 
@@ -670,5 +752,6 @@ document.querySelector("#clearListBtn").addEventListener("click",()=>{
 function saveToLocalStorage(){
     localStorage.setItem("savedMovies",JSON.stringify(savedMovies))
 }
+
 renderHero("Home");
 renderRows("Home");
